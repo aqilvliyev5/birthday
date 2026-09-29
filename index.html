@@ -1,1063 +1,475 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ad Günün Mübarək, Gülsüm! 🎉 | Qrup Yoldaşlarından</title>
-  
-  <!-- Şriftlər -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Reenie+Beanie&display=swap" rel="stylesheet">
-
-  <style>
-    /* ==========================================================================
-       1. CORE SYSTEM & VARIABLES
-       ========================================================================== */
-    :root {
-      --bg-dark: #08040d;
-      --bg-card: rgba(255, 255, 255, 0.04);
-      --border-card: rgba(255, 255, 255, 0.12);
-      --primary-gold: #ffd700;
-      --gold-glow: rgba(255, 215, 0, 0.4);
-      --accent-pink: #ff2a7a;
-      --accent-purple: #9d4edd;
-      --accent-cyan: #00f2fe;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --font-heading: 'Cinzel', serif;
-      --font-body: 'Plus Jakarta Sans', sans-serif;
-      --font-hand: 'Reenie Beanie', cursive;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      overflow-x: hidden;
-    }
-
-    body {
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      font-family: var(--font-body);
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: var(--bg-dark);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(255, 215, 0, 0.2);
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--primary-gold);
-    }
-
-    /* ==========================================================================
-       2. CANVAS & BACKGROUND GRAPHICS
-       ========================================================================== */
-    #bg-canvas, #fireworks-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    #fireworks-canvas {
-      z-index: 99;
-    }
-
-    .ambient-glow {
-      position: fixed;
-      width: 600px;
-      height: 600px;
-      border-radius: 50%;
-      filter: blur(140px);
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.25;
-      animation: floatGlow 12s infinite alternate ease-in-out;
-    }
-    .glow-1 {
-      top: -100px;
-      left: -100px;
-      background: radial-gradient(circle, var(--accent-pink), transparent);
-    }
-    .glow-2 {
-      bottom: -100px;
-      right: -100px;
-      background: radial-gradient(circle, var(--accent-purple), transparent);
-    }
-
-    @keyframes floatGlow {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(80px, 60px) scale(1.2); }
-    }
-
-    /* ==========================================================================
-       3. NAVIGATION & AUDIO BAR
-       ========================================================================== */
-    .app-header {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      max-width: 1100px;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 28px;
-      background: rgba(15, 9, 26, 0.6);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border-card);
-      border-radius: 50px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-    }
-
-    .logo {
-      font-family: var(--font-heading);
-      font-size: 1.1rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-      color: var(--primary-gold);
-      text-shadow: 0 0 12px var(--gold-glow);
-    }
-
-    .audio-control {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 8px 18px;
-      border-radius: 30px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-    }
-
-    .audio-control:hover {
-      background: rgba(255, 215, 0, 0.15);
-      border-color: var(--primary-gold);
-    }
-
-    .equalizer {
-      display: flex;
-      align-items: flex-end;
-      gap: 3px;
-      height: 16px;
-    }
-
-    .eq-bar {
-      width: 3px;
-      background: var(--primary-gold);
-      border-radius: 2px;
-      height: 4px;
-      transition: height 0.2s ease;
-    }
-
-    .playing .eq-bar:nth-child(1) { animation: eq 0.6s infinite alternate; }
-    .playing .eq-bar:nth-child(2) { animation: eq 0.8s infinite alternate 0.2s; }
-    .playing .eq-bar:nth-child(3) { animation: eq 0.5s infinite alternate 0.4s; }
-
-    @keyframes eq {
-      0% { height: 4px; }
-      100% { height: 16px; }
-    }
-
-    /* ==========================================================================
-       4. HERO SECTION (3D TYPOGRAPHY & INTRO)
-       ========================================================================== */
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 120px 20px 60px;
-      z-index: 1;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 8px 20px;
-      background: linear-gradient(90deg, rgba(255,42,122,0.15), rgba(157,78,221,0.15));
-      border: 1px solid rgba(255, 42, 122, 0.3);
-      border-radius: 30px;
-      font-size: 0.85rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--accent-pink);
-      margin-bottom: 25px;
-      box-shadow: 0 0 20px rgba(255, 42, 122, 0.2);
-    }
-
-    .hero-title {
-      font-family: var(--font-heading);
-      font-size: clamp(2.5rem, 7vw, 5.5rem);
-      font-weight: 900;
-      line-height: 1.1;
-      margin-bottom: 20px;
-      background: linear-gradient(135deg, #ffffff 0%, #ffe680 50%, #ff2a7a 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 10px 30px rgba(0,0,0,0.8);
-      perspective: 1000px;
-    }
-
-    .hero-subtitle {
-      font-size: clamp(1rem, 2vw, 1.3rem);
-      color: var(--text-muted);
-      max-width: 650px;
-      line-height: 1.6;
-      margin-bottom: 40px;
-    }
-
-    .hero-subtitle span {
-      color: var(--primary-gold);
-      font-weight: 600;
-    }
-
-    .cta-btn {
-      position: relative;
-      padding: 18px 42px;
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      color: #000;
-      background: linear-gradient(45deg, var(--primary-gold), #ffaa00);
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 10px 30px var(--gold-glow);
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      overflow: hidden;
-    }
-
-    .cta-btn:hover {
-      transform: translateY(-5px) scale(1.05);
-      box-shadow: 0 18px 40px rgba(255, 215, 0, 0.6);
-    }
-
-    /* ==========================================================================
-       5. INTERACTIVE 3D CAKE SECTION
-       ========================================================================== */
-    .section-title {
-      font-family: var(--font-heading);
-      font-size: clamp(2rem, 4vw, 3rem);
-      text-align: center;
-      margin-bottom: 15px;
-      color: #fff;
-    }
-
-    .section-subtitle {
-      text-align: center;
-      color: var(--text-muted);
-      margin-bottom: 50px;
-      font-size: 1rem;
-    }
-
-    .cake-container {
-      position: relative;
-      width: 100%;
-      max-width: 900px;
-      margin: 60px auto;
-      padding: 40px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      z-index: 2;
-    }
-
-    /* 3D Cake CSS Visual Structure */
-    .cake-3d {
-      position: relative;
-      width: 240px;
-      height: 200px;
-      margin-bottom: 40px;
-      cursor: pointer;
-      perspective: 1000px;
-    }
-
-    .cake-layer {
-      position: absolute;
-      width: 100%;
-      border-radius: 20px;
-      box-shadow: inset 0 5px 10px rgba(255,255,255,0.2), 0 10px 25px rgba(0,0,0,0.5);
-    }
-
-    .layer-bottom {
-      bottom: 0;
-      height: 80px;
-      background: linear-gradient(135deg, #4a154b, #2b0938);
-      border: 2px solid rgba(255, 42, 122, 0.4);
-    }
-
-    .layer-middle {
-      bottom: 65px;
-      left: 10%;
-      width: 80%;
-      height: 65px;
-      background: linear-gradient(135deg, #ff2a7a, #9d4edd);
-      border: 2px solid rgba(255, 215, 0, 0.4);
-    }
-
-    .layer-top {
-      bottom: 120px;
-      left: 20%;
-      width: 60%;
-      height: 55px;
-      background: linear-gradient(135deg, #ffe680, #ffd700);
-    }
-
-    /* Candles */
-    .candles-group {
-      position: absolute;
-      top: 0px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 18px;
-      z-index: 10;
-    }
-
-    .candle {
-      position: relative;
-      width: 10px;
-      height: 35px;
-      background: repeating-linear-gradient(45deg, #fff, #fff 5px, #ff2a7a 5px, #ff2a7a 10px);
-      border-radius: 4px;
-    }
-
-    .flame {
-      position: absolute;
-      top: -18px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 12px;
-      height: 20px;
-      background: radial-gradient(ellipse at bottom, #ffffff, #ffea00 40%, #ff3d00 80%);
-      border-radius: 50% 50% 20% 20%;
-      box-shadow: 0 0 15px #ffea00, 0 0 30px #ff3d00;
-      animation: flicker 0.2s infinite alternate ease-in-out;
-      transition: all 0.5s ease;
-    }
-
-    .flame.blown {
-      opacity: 0;
-      transform: translateX(-50%) scale(0.1);
-    }
-
-    @keyframes flicker {
-      0% { transform: translateX(-50%) scale(1) rotate(-2deg); }
-      100% { transform: translateX(-50%) scale(1.1) rotate(2deg); }
-    }
-
-    .cake-btn {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--primary-gold);
-      color: var(--primary-gold);
-      padding: 14px 32px;
-      border-radius: 30px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-    }
-
-    .cake-btn:hover {
-      background: var(--primary-gold);
-      color: #000;
-      box-shadow: 0 0 25px var(--gold-glow);
-    }
-
-    /* ==========================================================================
-       6. 3D TILT CARDS SECTION (MESSAGES FROM CLASSMATES)
-       ========================================================================== */
-    .wishes-section {
-      position: relative;
-      padding: 80px 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-      z-index: 2;
-    }
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 30px;
-      margin-top: 40px;
-    }
-
-    .tilt-card {
-      position: relative;
-      background: var(--bg-card);
-      border: 1px solid var(--border-card);
-      border-radius: 24px;
-      padding: 35px 30px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-      transform-style: preserve-3d;
-      transition: transform 0.1s ease-out, border-color 0.3s ease, box-shadow 0.3s ease;
-      cursor: pointer;
-    }
-
-    .tilt-card:hover {
-      border-color: rgba(255, 215, 0, 0.4);
-      box-shadow: 0 30px 60px rgba(255, 215, 0, 0.15);
-    }
-
-    .card-content {
-      transform: translateZ(30px);
-    }
-
-    .card-avatar {
-      width: 55px;
-      height: 55px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 1.2rem;
-      color: #fff;
-      margin-bottom: 20px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .author-name {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--primary-gold);
-      margin-bottom: 4px;
-    }
-
-    .author-role {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 18px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .wish-text {
-      font-size: 0.98rem;
-      line-height: 1.7;
-      color: #e2e8f0;
-      font-weight: 300;
-    }
-
-    /* Quote icon decoration */
-    .tilt-card::before {
-      content: '“';
-      position: absolute;
-      top: 15px;
-      right: 25px;
-      font-size: 5rem;
-      font-family: serif;
-      color: rgba(255, 255, 255, 0.03);
-      pointer-events: none;
-    }
-
-    /* ==========================================================================
-       7. MEMORY GALLERY / POLAROID 3D STACK
-       ========================================================================== */
-    .gallery-section {
-      padding: 80px 20px;
-      max-width: 1100px;
-      margin: 0 auto;
-      text-align: center;
-      z-index: 2;
-      position: relative;
-    }
-
-    .polaroid-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 35px;
-      margin-top: 50px;
-    }
-
-    .polaroid {
-      background: #fff;
-      padding: 15px 15px 25px 15px;
-      border-radius: 8px;
-      width: 260px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-      transform: rotate(var(--rot));
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      cursor: pointer;
-    }
-
-    .polaroid:hover {
-      transform: scale(1.1) rotate(0deg) !important;
-      z-index: 10;
-      box-shadow: 0 30px 60px rgba(255, 215, 0, 0.3);
-    }
-
-    .photo-placeholder {
-      width: 100%;
-      height: 200px;
-      background: linear-gradient(135deg, #2a0845, #6441a5);
-      border-radius: 4px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: rgba(255,255,255,0.7);
-      font-size: 2.5rem;
-      margin-bottom: 15px;
-    }
-
-    .caption {
-      font-family: var(--font-hand);
-      font-size: 1.8rem;
-      color: #222;
-      font-weight: bold;
-    }
-
-    /* ==========================================================================
-       8. LIVE INTERACTIVE WISH WALL (VISITOR INPUT)
-       ========================================================================== */
-    .interactive-wall {
-      max-width: 800px;
-      margin: 80px auto;
-      padding: 40px;
-      background: rgba(20, 10, 35, 0.7);
-      border: 1px solid var(--border-card);
-      border-radius: 30px;
-      backdrop-filter: blur(20px);
-      z-index: 2;
-      position: relative;
-    }
-
-    .wish-form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      margin-top: 25px;
-    }
-
-    .form-input, .form-textarea {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 14px 20px;
-      border-radius: 12px;
-      color: #fff;
-      font-family: var(--font-body);
-      font-size: 0.95rem;
-      outline: none;
-      transition: border-color 0.3s;
-    }
-
-    .form-input:focus, .form-textarea:focus {
-      border-color: var(--primary-gold);
-    }
-
-    .form-textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .submit-btn {
-      background: linear-gradient(45deg, var(--accent-pink), var(--accent-purple));
-      color: #fff;
-      border: none;
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: opacity 0.3s;
-    }
-
-    .submit-btn:hover {
-      opacity: 0.9;
-    }
-
-    /* Dynamic Wishes Container */
-    .dynamic-wishes {
-      margin-top: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .dynamic-wish-item {
-      background: rgba(255, 255, 255, 0.03);
-      padding: 15px 20px;
-      border-radius: 12px;
-      border-left: 3px solid var(--accent-pink);
-      animation: fadeIn 0.5s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ==========================================================================
-       9. FOOTER
-       ========================================================================== */
-    footer {
-      text-align: center;
-      padding: 60px 20px 40px;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      position: relative;
-      z-index: 2;
-    }
-
-    footer span {
-      color: var(--accent-pink);
-    }
-
-    /* Responsive Queries */
-    @media (max-width: 768px) {
-      .app-header { padding: 10px 18px; }
-      .logo { font-size: 0.95rem; }
-      .hero { padding-top: 100px; }
-      .cards-grid { grid-template-columns: 1fr; }
-      .interactive-wall { padding: 25px; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Özəl Günün Mübarək</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Təməl Tənzimləmələr */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0c;
+            --bg-card: #121216;
+            --accent-gold: #dfba6b;
+            --accent-soft: #bfa15f;
+            --text-light: #f5f5f7;
+            --text-muted: #a0a0aa;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* İnteraktiv Arxa Fon Canvası */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Bütün məzmun canvasın üzərində olmalıdır */
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Rəvan Giriş Animasiyaları üçün */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero (Giriş) Bölməsi */
+        header.hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 24px;
+            position: relative;
+        }
+
+        .hero-title-wrap {
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        header.hero h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            font-weight: 400;
+            letter-spacing: 4px;
+            color: var(--accent-gold);
+            text-shadow: 0 0 20px rgba(223, 186, 107, 0.2);
+            opacity: 0;
+            transform: translateY(60px);
+            animation: slideUpFade 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.5s;
+        }
+
+        header.hero p {
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            max-width: 600px;
+            font-weight: 300;
+            opacity: 0;
+            animation: fadeIn 2s ease forwards 1.5s;
+        }
+
+        @keyframes slideUpFade {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Aşağı Sürüşdürmə İndikatoru */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-soft);
+            opacity: 0.7;
+            animation: float 2.5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Əsas Mətn/Məktub Bölməsi */
+        .letter-section {
+            padding: 140px 24px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .letter-container {
+            max-width: 750px;
+            background: linear-gradient(145deg, #141419, #0d0d11);
+            padding: 60px 50px;
+            border-radius: 8px;
+            border: 1px solid rgba(223, 186, 107, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .letter-container h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-gold);
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+        }
+
+        .letter-text {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: #d1d1d6;
+            font-weight: 300;
+            text-align: justify;
+            text-align-last: center;
+        }
+
+        /* Qalereya Bölməsi */
+        .gallery-section {
+            padding: 100px 24px 160px 24px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .gallery-section h2 {
+            font-family: 'Cinzel', serif;
+            text-align: center;
+            font-size: 2.2rem;
+            color: var(--accent-gold);
+            margin-bottom: 60px;
+            letter-spacing: 2px;
+        }
+
+        /* Dinamik Firebase Qalereya Şəbəkəsi */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .gallery-item {
+            background-color: var(--bg-card);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 4/5;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.6s ease;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(35%) brightness(0.9);
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), filter 0.8s ease;
+        }
+
+        /* Zərif Böyümə Və İşıq Effekti */
+        .gallery-item:hover {
+            transform: translateY(-8px);
+            border-color: rgba(223, 186, 107, 0.4);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.04);
+            filter: grayscale(0%) brightness(1);
+        }
+
+        .status-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1rem;
+            padding: 40px;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 24px;
+            text-align: center;
+            background-color: #050507;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        footer p {
+            color: #55555a;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Mobil Cihazlar Üçün Tam Uyğunluq (Responsive) */
+        @media (max-width: 768px) {
+            header.hero h1 {
+                font-size: 2.2rem;
+                letter-spacing: 2px;
+            }
+            
+            header.hero p {
+                font-size: 0.95rem;
+            }
+
+            .letter-container {
+                padding: 40px 24px;
+            }
+
+            .letter-container h2 {
+                font-size: 1.8rem;
+            }
+
+            .letter-text {
+                font-size: 1rem;
+                line-height: 1.7;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <!-- Ambient Glow Backgrounds -->
-  <div class="ambient-glow glow-1"></div>
-  <div class="ambient-glow glow-2"></div>
+    <canvas id="bg-canvas"></canvas>
 
-  <!-- Canvases for 3D background & celebration fireworks -->
-  <canvas id="bg-canvas"></canvas>
-  <canvas id="fireworks-canvas"></canvas>
+    <div class="content-wrapper">
+        <header class="hero">
+            <div class="hero-title-wrap">
+                <h1 id="hero-title">Ad Günün Mübarək</h1>
+            </div>
+            <p id="hero-subtitle">Həyatın mənası və ən gözəl xatirələrin başlanğıcı.</p>
+            <div class="scroll-indicator">Aşağı Sürüşdür</div>
+        </header>
 
-  <!-- Header & Audio Controller -->
-  <header class="app-header">
-    <div class="logo">GÜLSÜM • 3D B-DAY</div>
-    <div class="audio-control" id="audioToggle" title="Musiqini Qoş / Söndür">
-      <div class="equalizer">
-        <div class="eq-bar"></div>
-        <div class="eq-bar"></div>
-        <div class="eq-bar"></div>
-      </div>
-      <span id="audioText" style="font-size: 0.85rem; font-weight: 600;">Səs: Bəli</span>
+        <section class="letter-section">
+            <div class="letter-container reveal">
+                <h2 id="letter-title">Dəyərlimə</h2>
+                <p class="letter-text" id="letter-content">
+                    Bəzən sözlər insanın içindəki duyğuları ifadə etmək üçün yetərsiz qalır. Səninlə keçirdiyim zaman, həyatın mənə verdiyi ən gözəl hədiyyədir. Sənin duruşun, hadisələrə yetkin və dərin baxış açın mənə hər zaman ilham verir. Bu yeni yaşında sənə daxili rahatlıq, bitməyən uğurlar və birlikdə addımlayacağımız gözəl xatirələr arzulayıram. Yaxşı ki, varsan.
+                </p>
+            </div>
+        </section>
+
+        <section class="gallery-section">
+            <h2 class="reveal">Baxışların dəyişməyib</h2>
+            <div class="gallery-grid" id="gallery-grid">
+                <div class="status-message" id="gallery-status">Xatirələr yüklənir...</div>
+            </div>
+        </section>
+
+        <footer>
+            <p>© 2026 • Hər Detalı İlə Özəl Hazırlandı</p>
+        </footer>
     </div>
-  </header>
 
-  <!-- Main Hero Section -->
-  <main>
-    <section class="hero">
-      <div class="badge">✨ Xüsusi Ad Günü Təbriki ✨</div>
-      <h1 class="hero-title">Ad Günün Mübarək,<br>Gülsüm! 🎂</h1>
-      <p class="hero-subtitle">
-        Sənə həyatının hər anında <span>işıq, uğur və sonsuz xoşbəxtlik</span> arzulayırıq. Qrup yoldaşlarının sənə özəl olaraq hazırladığı bu 3D təbrik dünyasına xoş gəldin!
-      </p>
-      <button class="cta-btn" onclick="scrollToCake()">Tortu Kəsak & Şamları Üfür 🎈</button>
-    </section>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    <!-- Interactive 3D Cake Section -->
-    <section class="cake-container" id="cakeSection">
-      <h2 class="section-title">İnteraktiv 3D Tort</h2>
-      <p class="section-subtitle">Şamları üfürmək üçün düyməyə kliklə və arzunu tut!</p>
-      
-      <div class="cake-3d" id="cake">
-        <div class="candles-group">
-          <div class="candle"><div class="flame" id="flame1"></div></div>
-          <div class="candle"><div class="flame" id="flame2"></div></div>
-          <div class="candle"><div class="flame" id="flame3"></div></div>
-        </div>
-        <div class="cake-layer layer-top"></div>
-        <div class="cake-layer layer-middle"></div>
-        <div class="cake-layer layer-bottom"></div>
-      </div>
+        // Sizin Firebase Konfiqurasiyanız
+        const firebaseConfig = {
+            apiKey: "AIzaSyDOQoODyY4FGf_fwGfDlcyOweyQrl9AtMI",
+            authDomain: "brainmathonline-fdba8.firebaseapp.com",
+            databaseURL: "https://brainmathonline-fdba8-default-rtdb.firebaseio.com",
+            projectId: "brainmathonline-fdba8",
+            storageBucket: "brainmathonline-fdba8.firebasestorage.app",
+            messagingSenderId: "105111047500",
+            appId: "1:105111047500:web:88b2a7a3f287220a4113e9",
+            measurementId: "G-6ESNP2JC9L"
+        };
 
-      <button class="cake-btn" id="blowBtn" onclick="blowCandles()">🕯️ Şamları Üfür & Bayramı Başlat!</button>
-    </section>
+        // Firebase-i Başlat
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-    <!-- 3D Tilt Cards Section: Messages from Classmates -->
-    <section class="wishes-section">
-      <h2 class="section-title">Qrup Yoldaşlarından Arzulayırıq</h2>
-      <p class="section-subtitle">Kartların üzərinə mausu gətirərək 3D effektini hiss edin</p>
+        // Elementləri Seçmək
+        const galleryGrid = document.getElementById('gallery-grid');
+        const galleryStatus = document.getElementById('gallery-status');
+        const heroTitle = document.getElementById('hero-title');
+        const heroSubtitle = document.getElementById('hero-subtitle');
+        const letterTitle = document.getElementById('letter-title');
+        const letterContent = document.getElementById('letter-content');
 
-      <div class="cards-grid">
-        <!-- Card 1 -->
-        <div class="tilt-card" data-tilt>
-          <div class="card-content">
-            <div class="card-avatar">A</div>
-            <div class="author-name">Aysel & Qrup Qızları</div>
-            <div class="author-role">Qrup Yoldaşın</div>
-            <p class="wish-text">
-              Əziz Gülsüm, ad günün mübarək! Tələbəlik illərimizin ən səmimi, mehriban və gülərüz qızı olduğun üçün çox şadıq. Əla qiymətlər, yüksək uğurlar və gözəl gələcək həmişə səninlə olsun!
-            </p>
-          </div>
-        </div>
+        const surpriseRef = ref(db, 'birthday_surprise_gulsum');
+        
+        onValue(surpriseRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                if (data.hero_title) heroTitle.innerText = data.hero_title;
+                if (data.hero_subtitle) heroSubtitle.innerText = data.hero_subtitle;
+                if (data.letter_title) letterTitle.innerText = data.letter_title;
+                if (data.letter_content) letterContent.innerText = data.letter_content;
 
-        <!-- Card 2 -->
-        <div class="tilt-card" data-tilt>
-          <div class="card-content">
-            <div class="card-avatar">Ə</div>
-            <div class="author-name">Əli & Qrup Oğlanları</div>
-            <div class="author-role">Qrup Yoldaşın</div>
-            <p class="wish-text">
-              Gülsüm, yeni yaşın mübarək! Dərslərdə hər zaman komanda ruhunla seçilirsən. Sənə gələcək karyeranda və şəxsi həyatında ancaq zirvələri fəth etməyi arzulayırıq!
-            </p>
-          </div>
-        </div>
+                if (data.images) {
+                    galleryGrid.innerHTML = ''; 
+                    
+                    Object.keys(data.images).forEach((key) => {
+                        const base64Data = data.images[key];
+                        
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'gallery-item reveal active';
+                        
+                        const img = document.createElement('img');
+                        if (base64Data.startsWith('data:image')) {
+                            img.src = base64Data;
+                        } else {
+                            img.src = `data:image/jpeg;base64,${base64Data}`;
+                        }
+                        img.alt = "Bizim Xatirəmiz";
+                        
+                        itemDiv.appendChild(img);
+                        galleryGrid.appendChild(itemDiv);
+                    });
+                    initScrollReveal();
+                } else {
+                    galleryStatus.innerText = "Hələ heç bir şəkil əlavə edilməyib. Admin paneldən yükləyin.";
+                }
+            } else {
+                galleryStatus.innerText = "Məlumat tapılmadı. Admin paneldən mətnləri yadda saxlayın.";
+            }
+        });
 
-        <!-- Card 3 -->
-        <div class="tilt-card" data-tilt>
-          <div class="card-content">
-            <div class="card-avatar">🎓</div>
-            <div class="author-name">Bütün Qrup Kollektivi</div>
-            <div class="author-role">Universitet Dostların</div>
-            <p class="wish-text">
-              İllər keçsə də tələbəlik xatirələrimizdə hər zaman xüsusi yerin olacaq. Üzündən təbəssüm, qəlbindən sevinç heç vaxt əskik olmasın. Yaxşı ki varsan, yaxşı ki bizim qrupdasan!
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
+        /* Sürüşdürmə Zamanı Elementlərin Zərif Səhnəyə Gəlməsi */
+        function initScrollReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            const windowHeight = window.innerHeight;
 
-    <!-- Polaroid Photo Gallery -->
-    <section class="gallery-section">
-      <h2 class="section-title">Xatirə Lövhəsi</h2>
-      <p class="section-subtitle">Universitet illərindən unudulmaz anlar</p>
+            const checkReveal = () => {
+                reveals.forEach(reveal => {
+                    const elementTop = reveal.getBoundingClientRect().top;
+                    const elementVisible = 100;
 
-      <div class="polaroid-grid">
-        <div class="polaroid" style="--rot: -4deg;">
-          <div class="photo-placeholder">📚</div>
-          <div class="caption">Mühazirələr</div>
-        </div>
-        <div class="polaroid" style="--rot: 3deg;">
-          <div class="photo-placeholder">☕</div>
-          <div class="caption">Fasilələr</div>
-        </div>
-        <div class="polaroid" style="--rot: -2deg;">
-          <div class="photo-placeholder">🎉</div>
-          <div class="caption">Ad Günü!</div>
-        </div>
-      </div>
-    </section>
+                    if (elementTop < windowHeight - elementVisible) {
+                        reveal.classList.add('active');
+                    }
+                });
+            };
 
-    <!-- Interactive Wish Input Wall -->
-    <section class="interactive-wall">
-      <h2 class="section-title" style="font-size: 1.8rem;">Ürək Sözünü Əlavə Et</h2>
-      <p class="section-subtitle" style="margin-bottom: 20px;">Sən də Gülsüm üçün öz xüsusi arzusunu bura yaza bilərsən:</p>
-
-      <form class="wish-form" id="wishForm" onsubmit="addWish(event)">
-        <input type="text" class="form-input" id="senderName" placeholder="Adın (məsələn: Leyla)" required>
-        <textarea class="form-textarea" id="senderMessage" placeholder="Gülsümə ürək sözlərin..." required></textarea>
-        <button type="submit" class="submit-btn">Təbriki Göndər ✨</button>
-      </form>
-
-      <div class="dynamic-wishes" id="dynamicWishes">
-        <!-- New dynamic wishes will appear here -->
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <p>Qrup Yoldaşları tərəfindən <span>Gülsüm</span> üçün sevgi ilə hazırlandı • 2026</p>
-  </footer>
-
-  <!-- ==========================================================================
-       JAVASCRIPT LOGIC ENGINE
-       ========================================================================== -->
-  <script>
-    /* --------------------------------------------------------------------------
-       1. 3D PARTICLE BACKGROUND CANVAS ENGINE
-       -------------------------------------------------------------------------- */
-    const bgCanvas = document.getElementById('bg-canvas');
-    const bgCtx = bgCanvas.getContext('2d');
-    let width, height;
-    let particles = [];
-
-    function resizeBg() {
-      width = bgCanvas.width = window.innerWidth;
-      height = bgCanvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeBg);
-    resizeBg();
-
-    class Particle {
-      constructor() {
-        this.reset();
-      }
-      reset() {
-        this.x = Math.random() * width;
-        this.y = Math.random() * height;
-        this.z = Math.random() * 1000;
-        this.size = Math.random() * 2 + 0.5;
-        this.color = ['#ffd700', '#ff2a7a', '#9d4edd', '#00f2fe'][Math.floor(Math.random() * 4)];
-        this.vx = (Math.random() - 0.5) * 0.4;
-        this.vy = (Math.random() - 0.5) * 0.4;
-      }
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) {
-          this.reset();
+            window.addEventListener('scroll', checkReveal);
+            checkReveal(); 
         }
-      }
-      draw() {
-        const opacity = (1000 - this.z) / 1000;
-        bgCtx.beginPath();
-        bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        bgCtx.fillStyle = this.color;
-        bgCtx.globalAlpha = opacity * 0.7;
-        bgCtx.shadowBlur = 10;
-        bgCtx.shadowColor = this.color;
-        bgCtx.fill();
-      }
-    }
 
-    for (let i = 0; i < 120; i++) {
-      particles.push(new Particle());
-    }
+        document.addEventListener("DOMContentLoaded", initScrollReveal);
 
-    function animateBg() {
-      bgCtx.clearRect(0, 0, width, height);
-      particles.forEach(p => {
-        p.update();
-        p.draw();
-      });
-      requestAnimationFrame(animateBg);
-    }
-    animateBg();
+    </script>
 
-    /* --------------------------------------------------------------------------
-       2. FIREWORKS & CONFETTI SYSTEM
-       -------------------------------------------------------------------------- */
-    const fwCanvas = document.getElementById('fireworks-canvas');
-    const fwCtx = fwCanvas.getContext('2d');
-    let fwWidth, fwHeight;
-    let confetti = [];
+    <script>
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
 
-    function resizeFw() {
-      fwWidth = fwCanvas.width = window.innerWidth;
-      fwHeight = fwCanvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeFw);
-    resizeFw();
+        let particlesArray = [];
+        const numberOfParticles = 45; 
 
-    class ConfettiPiece {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.size = Math.random() * 8 + 4;
-        this.color = ['#ffd700', '#ff2a7a', '#9d4edd', '#00f2fe', '#ffffff'][Math.floor(Math.random() * 5)];
-        this.vx = (Math.random() - 0.5) * 12;
-        this.vy = (Math.random() - 2) * 10;
-        this.gravity = 0.25;
-        this.rotation = Math.random() * 360;
-        this.rotationSpeed = (Math.random() - 0.5) * 10;
-        this.opacity = 1;
-      }
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        this.vy += this.gravity;
-        this.rotation += this.rotationSpeed;
-        this.opacity -= 0.008;
-      }
-      draw() {
-        fwCtx.save();
-        fwCtx.translate(this.x, this.y);
-        fwCtx.rotate((this.rotation * Math.PI) / 180);
-        fwCtx.fillStyle = this.color;
-        fwCtx.globalAlpha = Math.max(0, this.opacity);
-        fwCtx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
-        fwCtx.restore();
-      }
-    }
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
-    function triggerConfetti() {
-      const startX = fwWidth / 2;
-      const startY = fwHeight / 2;
-      for (let i = 0; i < 150; i++) {
-        confetti.push(new ConfettiPiece(startX, startY));
-      }
-    }
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2.5 + 0.5; 
+                this.speedX = Math.random() * 0.2 - 0.1; 
+                this.speedY = Math.random() * 0.3 - 0.4; 
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.fadeSpeed = Math.random() * 0.005 + 0.002;
+            }
 
-    function animateConfetti() {
-      fwCtx.clearRect(0, 0, fwWidth, fwHeight);
-      confetti = confetti.filter(c => c.opacity > 0);
-      confetti.forEach(c => {
-        c.update();
-        c.draw();
-      });
-      requestAnimationFrame(animateConfetti);
-    }
-    animateConfetti();
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
 
-    /* --------------------------------------------------------------------------
-       3. WEB AUDIO API SOUND SYNTHESIZER (NO EXTERNAL AUDIO FILES REQUIRED)
-       -------------------------------------------------------------------------- */
-    let audioCtx = null;
-    let isAudioPlaying = false;
+                if (this.y < 0) {
+                    this.y = canvas.height;
+                    this.x = Math.random() * canvas.width;
+                }
+                if (this.x < 0 || this.x > canvas.width) {
+                    this.speedX = -this.speedX;
+                }
 
-    function initAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-    }
+                this.opacity -= this.fadeSpeed;
+                if (this.opacity <= 0.1 || this.opacity >= 0.7) {
+                    this.fadeSpeed = -this.fadeSpeed;
+                }
+            }
 
-    function playNote(freq, duration, delay = 0) {
-      if (!audioCtx || !isAudioPlaying) return;
-      setTimeout(() => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-      }, delay);
-    }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(223, 186, 107, ${this.opacity})`;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#dfba6b';
+                ctx.fill();
+                ctx.shadowBlur = 0; 
+            }
+        }
 
-    // Happy Birthday Melody Synthesizer Notes
-    const melody = [
-      { f: 264, d: 0.4 }, { f: 264, d: 0.4 }, { f: 297, d: 0.8 }, { f: 264, d: 0.8 }, { f: 352, d: 0.8 }, { f: 330, d: 1.2 },
-      { f: 264, d: 0.4 }, { f: 264, d: 0.4 }, { f: 297, d: 0.8 }, { f: 264, d: 0.8 }, { f: 396, d: 0.8 }, { f: 352, d: 1.2 }
-    ];
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
 
-    function playMelodySequence() {
-      if (!isAudioPlaying) return;
-      let timeAccumulator = 0;
-      melody.forEach(note => {
-        playNote(note.f, note.d, timeAccumulator * 1000);
-        timeAccumulator += note.d;
-      });
-      setTimeout(() => {
-        if (isAudioPlaying) playMelodySequence();
-      }, timeAccumulator * 1000 + 1000);
-    }
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(10, 10, 12, 0.08)';
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
 
-    const audioToggle = document.getElementById('audioToggle');
-    const audioText = document.getElementById('audioText');
-
-    audioToggle.addEventListener('click', () => {
-      initAudio();
-      isAudioPlaying = !isAudioPlaying;
-      if (isAudioPlaying) {
-        audioToggle.classList.add('playing');
-        audioText.innerText = 'Səs: Bəli';
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        playMelodySequence();
-      } else {
-        audioToggle.classList.remove('playing');
-        audioText.innerText = 'Səs: Xeyr';
-      }
-    });
-
-    /* --------------------------------------------------------------------------
-       4. INTERACTIVE 3D TILT CARDS LOGIC
-       -------------------------------------------------------------------------- */
-    const cards = document.querySelectorAll('[data-tilt]');
-
-    cards.forEach(card => {
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-
-        const rotateX = ((y - centerY) / centerY) * -12;
-        const rotateY = ((x - centerX) / centerX) * 12;
-
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-      });
-
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-      });
-    });
-
-    /* --------------------------------------------------------------------------
-       5. CAKE & CANDLE BLOWING INTERACTION
-       -------------------------------------------------------------------------- */
-    function blowCandles() {
-      document.getElementById('flame1').classList.add('blown');
-      document.getElementById('flame2').classList.add('blown');
-      document.getElementById('flame3').classList.add('blown');
-      
-      const btn = document.getElementById('blowBtn');
-      btn.innerText = '🎉 Arzun Qəbul Olsun, Gülsüm!';
-      btn.style.borderColor = '#ff2a7a';
-      btn.style.color = '#ff2a7a';
-
-      // Fire celebratory confetti blasts
-      triggerConfetti();
-      setTimeout(triggerConfetti, 400);
-      setTimeout(triggerConfetti, 800);
-
-      // Play victory chime if audio active
-      if (isAudioPlaying && audioCtx) {
-        playNote(523, 0.5, 0);
-        playNote(659, 0.5, 150);
-        playNote(783, 0.8, 300);
-      }
-    }
-
-    function scrollToCake() {
-      document.getElementById('cakeSection').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    /* --------------------------------------------------------------------------
-       6. LIVE DYNAMIC WISH WALL LOGIC
-       -------------------------------------------------------------------------- */
-    function addWish(e) {
-      e.preventDefault();
-      const name = document.getElementById('senderName').value;
-      const msg = document.getElementById('senderMessage').value;
-
-      if (!name || !msg) return;
-
-      const wishesContainer = document.getElementById('dynamicWishes');
-      const item = document.createElement('div');
-      item.className = 'dynamic-wish-item';
-      item.innerHTML = `
-        <div style="font-weight: 700; color: var(--primary-gold); margin-bottom: 4px;">${escapeHtml(name)}</div>
-        <div style="color: #cbd5e1; font-size: 0.95rem;">${escapeHtml(msg)}</div>
-      `;
-
-      wishesContainer.prepend(item);
-
-      // Reset form
-      document.getElementById('wishForm').reset();
-      triggerConfetti();
-    }
-
-    function escapeHtml(text) {
-      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
-  </script>
+        initParticles();
+        animate();
+    </script>
 </body>
 </html>
