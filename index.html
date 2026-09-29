@@ -1,1 +1,152 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ad Gününüz Mübarək!</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e1b4b, #311042);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    h1 {
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 2.2rem;
+      color: #fde047;
+      text-shadow: 0 0 10px rgba(253, 224, 71, 0.5);
+    }
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 25px;
+      justify-content: center;
+      max-width: 900px;
+      width: 100%;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 30px 25px;
+      flex: 1 1 320px;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px 0 rgba(236, 72, 153, 0.3);
+    }
+    .avatar {
+      font-size: 3.5rem;
+      margin-bottom: 15px;
+    }
+    .name {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #38bdf8;
+      margin-bottom: 10px;
+    }
+    .wish {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      margin-bottom: 20px;
+    }
+    .btn {
+      background: linear-gradient(45deg, #ec4899, #8b5cf6);
+      border: none;
+      color: #fff;
+      padding: 12px 24px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+      transition: opacity 0.2s;
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+    /* Konfetti effekti üçün */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      top: -10px;
+      z-index: 999;
+      animation: fall linear forwards;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(720deg);
+      }
+    }
+  </style>
+</head>
+<body>
 
+  <h1>🎉 Ad Gününüz Mübarək! 🎂</h1>
+
+  <div class="cards-container">
+    
+    <!-- 1-ci Təbrik Kartı -->
+    <div class="card">
+      <div class="avatar">🎁</div>
+      <div class="name">Birinci Şəxsin Adı</div>
+      <p class="wish">
+        Sənə möhkəm cansağlığı, tükənməz enerjilər və bütün arzularının çin olmasını arzulayıram! Yeni yaşın həyatına bol şans, uğur və unudulmaz anlar gətirsin!
+      </p>
+      <button class="btn" onclick="celebrate()">Təbrik et 🎈</button>
+    </div>
+
+    <!-- 2-ci Təbrik Kartı -->
+    <div class="card">
+      <div class="avatar">🌟</div>
+      <div class="name">İkinci Şəxsin Adı</div>
+      <p class="wish">
+        Ad günün mübarək! Həmişə üzün gülsün, ətrafında sevdiyin insanlar olsun. Yeni yaşında yeni nailiyyətlər və böyük uğurlar səni gözləsin!
+      </p>
+      <button class="btn" onclick="celebrate()">Təbrik et 🥳</button>
+    </div>
+
+  </div>
+
+  <script>
+    // Konfetti düşmə effekti
+    function celebrate() {
+      const colors = ['#ec4899', '#8b5cf6', '#38bdf8', '#fde047', '#4ade80'];
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        confetti.style.opacity = Math.random();
+        document.body.appendChild(confetti);
+
+        setTimeout(() => {
+          confetti.remove();
+        }, 4000);
+      }
+    }
+  </script>
+
+</body>
+</html>
