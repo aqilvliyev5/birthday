@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sürpriz Sayt - Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .admin-container {
+            width: 100%;
+            max-width: 800px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 { text-align: center; margin-bottom: 30px; color: #2c3e50; }
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .section h2 { font-size: 1.2rem; margin-bottom: 15px; color: #34495e; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.9rem; }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+        textarea { resize: vertical; min-height: 100px; }
+        button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: #219150; }
+        button:disabled { background-color: #95a5a6; cursor: not-allowed; }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            font-size: 0.9rem;
+        }
+        .status.success { background: #d4edda; color: #155724; display: block; }
+        .status.error { background: #f8d7da; color: #721c24; display: block; }
+        .file-upload-wrapper {
+            border: 2px dashed #bdc3c7;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            background: #fafafa;
+        }
+        #preview {
+            max-width: 200px;
+            margin-top: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <h1>Sürpriz İdarəetmə Paneli</h1>
+
+        <!-- Mətnlərin Yenilənməsi -->
+        <div class="section">
+            <h2>Mətnləri Dəyiş</h2>
+            <div class="form-group">
+                <label>Giriş Başlığı (Hero Title)</label>
+                <input type="text" id="hero_title" placeholder="Məs: Ad Günün Mübarək">
+            </div>
+            <div class="form-group">
+                <label>Giriş Alt Başlığı (Hero Subtitle)</label>
+                <input type="text" id="hero_subtitle" placeholder="Məs: Həyatın mənası...">
+            </div>
+            <div class="form-group">
+                <label>Məktub Başlığı</label>
+                <input type="text" id="letter_title" placeholder="Məs: Dəyərlimə">
+            </div>
+            <div class="form-group">
+                <label>Məktubun Mətni</label>
+                <textarea id="letter_content" placeholder="Məktubun məzmununu buraya yazın..."></textarea>
+            </div>
+            <button id="updateTextsBtn">Mətnləri Yadda Saxla</button>
+            <div id="textStatus" class="status"></div>
+        </div>
+
+        <!-- Şəkil Əlavə Edilməsi -->
+        <div class="section">
+            <h2>Qalereyaya Şəkil Əlavə Et (Base64)</h2>
+            <div class="file-upload-wrapper">
+                <input type="file" id="imageInput" accept="image/*">
+                <br>
+                <img id="preview" alt="Şəkil önbaxışı">
+            </div>
+            <button id="uploadImageBtn">Şəkli Firebase-ə Yüklə</button>
+            <div id="imageStatus" class="status"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, get, update, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDOQoODyY4FGf_fwGfDlcyOweyQrl9AtMI",
+            authDomain: "brainmathonline-fdba8.firebaseapp.com",
+            databaseURL: "https://brainmathonline-fdba8-default-rtdb.firebaseio.com",
+            projectId: "brainmathonline-fdba8",
+            storageBucket: "brainmathonline-fdba8.firebasestorage.app",
+            messagingSenderId: "105111047500",
+            appId: "1:105111047500:web:88b2a7a3f287220a4113e9",
+            measurementId: "G-6ESNP2JC9L"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const surpriseRef = ref(db, 'birthday_surprise_gulsum');
+        const imagesRef = ref(db, 'birthday_surprise_gulsum/images');
+
+        // Məlumatları gətirmək
+        async function loadCurrentData() {
+            try {
+                const snapshot = await get(surpriseRef);
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    if(data.hero_title) document.getElementById('hero_title').value = data.hero_title;
+                    if(data.hero_subtitle) document.getElementById('hero_subtitle').value = data.hero_subtitle;
+                    if(data.letter_title) document.getElementById('letter_title').value = data.letter_title;
+                    if(data.letter_content) document.getElementById('letter_content').value = data.letter_content;
+                }
+            } catch (error) {
+                console.error("Məlumatı çəkərkən xəta:", error);
+            }
+        }
+        loadCurrentData();
+
+        // Mətnləri Yeniləmək
+        document.getElementById('updateTextsBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('updateTextsBtn');
+            const status = document.getElementById('textStatus');
+            btn.disabled = true;
+            btn.innerText = "Yadda saxlanılır...";
+
+            const updates = {
+                hero_title: document.getElementById('hero_title').value,
+                hero_subtitle: document.getElementById('hero_subtitle').value,
+                letter_title: document.getElementById('letter_title').value,
+                letter_content: document.getElementById('letter_content').value
+            };
+
+            try {
+                await update(surpriseRef, updates);
+                status.className = "status success";
+                status.innerText = "Mətnlər uğurla yeniləndi!";
+            } catch (error) {
+                status.className = "status error";
+                status.innerText = "Xəta baş verdi: " + error.message;
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Mətnləri Yadda Saxla";
+                setTimeout(() => status.style.display = 'none', 3000);
+            }
+        });
+
+        // Şəkil Önbaxışı və Base64 Çevirmə
+        let currentBase64 = null;
+        const imageInput = document.getElementById('imageInput');
+        const preview = document.getElementById('preview');
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                currentBase64 = event.target.result;
+                preview.src = currentBase64;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file); // Şəkli Base64 formatına çevirir
+        });
+
+        // Şəkli Firebase-ə yükləmək (push edirik ki, əvvəlkilər silinməsin)
+        document.getElementById('uploadImageBtn').addEventListener('click', async () => {
+            if (!currentBase64) {
+                alert("Əvvəlcə şəkil seçin!");
+                return;
+            }
+
+            const btn = document.getElementById('uploadImageBtn');
+            const status = document.getElementById('imageStatus');
+            btn.disabled = true;
+            btn.innerText = "Yüklənir...";
+
+            try {
+                // 'push' funksiyası unikal bir ID yaradaraq şəkli qalereyaya əlavə edir
+                await push(imagesRef, currentBase64);
+                
+                status.className = "status success";
+                status.innerText = "Şəkil qalereyaya uğurla əlavə edildi!";
+                
+                // Sıfırlamaq
+                imageInput.value = "";
+                preview.style.display = 'none';
+                currentBase64 = null;
+            } catch (error) {
+                status.className = "status error";
+                status.innerText = "Xəta baş verdi: " + error.message;
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Şəkli Firebase-ə Yüklə";
+                setTimeout(() => status.style.display = 'none', 4000);
+            }
+        });
+    </script>
+</body>
+</html>
